@@ -1,17 +1,7 @@
 import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  VStack,
-  Grid,
-} from '@chakra-ui/react';
-import { useFlutterwave } from 'flutterwave-react-v3';
-import Buttons from './components/Button';
-
-
-
-function App() {
-
+import { FlutterWaveButton, closePaymentModal } from 'flutterwave-react-v3';
+import { Button } from '@chakra-ui/react';
+export default function Buttons() {
   const config = {
     public_key: 'FLWPUBK_TEST-fe8286091d4928d4d97d5f872946622f-X',
     tx_ref: Date.now(),
@@ -24,26 +14,27 @@ function App() {
       name: 'joel ugwumadu',
     },
     customizations: {
-      title: 'my Payment Title',
+      title: 'My store',
       description: 'Payment for items in cart',
       logo: 'https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg',
     },
   };
 
- useFlutterwave(config)
+  const fwConfig = {
+    ...config,
+    text: 'Pay with Flutterwave!',
+    callback: response => {
+      console.log(response);
+      closePaymentModal(); // this will close the modal programmatically
+    },
+    onClose: () => {},
+  };
 
   return (
-    <ChakraProvider >
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" >
-          <VStack justifyContent='center' alignItems='center'>
-            
-            <Buttons/>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
+    <div className="App">
+      <Button>
+        <FlutterWaveButton {...fwConfig} />
+      </Button>
+    </div>
   );
 }
-
-export default App;
